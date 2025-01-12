@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fundo com GIFs</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+        }
+
+        .gif-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            grid-auto-rows: 100px;
+            gap: 5px;
+        }
+
+        .gif-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+        }
+
+        .message-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            font-family: Arial, sans-serif;
+            font-size: 1.2em;
+            color: #333;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .heart-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .heart-button:hover {
+            opacity: 0.8;
+        }
+
+        .page-flip {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateY(180deg);
+            width: 60%;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            font-family: Arial, sans-serif;
+            font-size: 1.5em;
+            color: #333;
+            text-align: center;
+        }
+
+        .nav-buttons {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-buttons button {
+            padding: 10px 15px;
+            font-size: 1em;
+            color: white;
+            background: linear-gradient(45deg, #ff7eb3, #ff758c);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .nav-buttons button:hover {
+            opacity: 0.8;
+        }
+
+        .gallery-container {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .carousel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        .carousel-images {
+            display: flex;
+            transition: transform 0.7s ease;
+        }
+
+        .carousel-images img {
+            width: 200px;
+            max-width: 100%;
+            object-fit: cover;
+        }
+
+        .carousel button {
+            background: transparent;
+            border: none;
+            font-size: 3em;
+            color: white;
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.3s;
+            z-index: 1;
+        }
+
+        .carousel button:hover {
+            transform: translateY(-50%) scale(1.2);
+            opacity: 0.8;
+        }
+
+        .carousel button.left {
+            left: 10px;
+        }
+
+        .carousel button.right {
+            right: 10px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #333;
+            border-radius: 5px;
+            z-index: 2;
+        }
+
+        .back-button:hover {
+            opacity: 0.8;
+        }
+
+        /* Estilo para a página adicional */
+        .extra-message-container {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            font-family: Arial, sans-serif;
+            font-size: 1.2em;
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="gif-container">
+        <script>
+            for (let i = 0; i < 100; i++) {
+                document.write("<img src='img/gif/cat.gif' alt='Cat GIF'>");
+            }
+        </script>
+    </div>
+
+    <button class="back-button" onclick="goBack()">Voltar</button>
+
+    <div class="gallery-container" id="gallery-container">
+        <div class="carousel">
+            <button class="left" onclick="moveCarousel('left')">❮</button>
+            <div class="carousel-images" id="carousel-images"></div>
+            <button class="right" onclick="moveCarousel('right')">❯</button>
+        </div>
+    </div>
+
+    <div class="nav-buttons">
+        <button onclick="openGallery()">Galeria</button>
+        <button onclick="alert('Fale comigo clicado!')">Fale cmg aqui</button>
+        <button onclick="alert('Bônus clicado!')">Bonus</button>
+        <button onclick="showExtraMessage()">Mensagem Extra</button>
+    </div>
+
+    <div class="message-box" id="message-box">
+        <p id="message-text"></p>
+        <button class="heart-button" onclick="flipPage()">❤️</button>
+    </div>
+    
+    <div class="page-flip" id="page-flip">
+        Oi
+    </div>
+
+    <!-- Nova página com o texto adicional -->
+    <div class="extra-message-container" id="extra-message-container">
+        <p>
+            To escrevendo isso no momento que vc disse que foi pra cama, não sei exatemanete pq vc ta assim com eu, me desculpa isso aqui deu um trabalhinho kkk seii que é mais uma bobeira que insisto em fazer mas espero q goste tem alguns erros obvio mas enfim, te amo não seria gay se vc não fosse minha, só saiba disso aqui tem umas fotos pra lembra q mesmo acabadinho eu sou assim nas fotos.
+        </p>
+        <button class="heart-button" onclick="goBack()">Voltar</button>
+    </div>
+
+    <script>
+        const message = "Oi gay isso aqui é o mais gay que já fiz na minha vida e eu sei que talvez seja chato toda hora manda essas gayzice, desculpa é tudo pra vc rir ou ver que amo você mas voltando ao assundo viadagem, o amor q sinto por você é iguual o tanto de viado que tem no brasil ou seja = PRA CARALHO tem mais coisa, segue o fio > ";
+        let index = 0;
+        const speed = 50;
+
+        function typeMessage() {
+            if (index < message.length) {
+                document.getElementById("message-text").innerHTML += message.charAt(index);
+                index++;
+                setTimeout(typeMessage, speed);
+            }
+        }
+
+        function flipPage() {
+            document.getElementById("message-box").style.display = "none";
+            document.getElementById("page-flip").style.display = "block";
+        }
+
+        function openGallery() {
+            document.querySelector('.gif-container').style.display = 'none';
+            document.getElementById('gallery-container').style.display = 'block';
+            document.getElementById('message-box').style.display = 'none';
+            loadImages();
+            startCarousel();
+        }
+
+        function goBack() {
+            document.querySelector('.gif-container').style.display = 'grid';
+            document.getElementById('gallery-container').style.display = 'none';
+            document.getElementById('message-box').style.display = 'block';
+            document.getElementById('extra-message-container').style.display = 'none'; // Esconde a página adicional
+            stopCarousel();
+        }
+
+        function showExtraMessage() {
+            document.getElementById('extra-message-container').style.display = 'block';
+            document.getElementById('message-box').style.display = 'none';
+            document.getElementById('gallery-container').style.display = 'none';
+        }
+
+        let carouselInterval;
+        let currentIndex = 0;
+        const totalImages = 23;
+
+        function startCarousel() {
+            carouselInterval = setInterval(function() {
+                moveCarousel('right');
+            }, 3000);
+        }
+
+        function stopCarousel() {
+            clearInterval(carouselInterval);
+        }
+
+        function moveCarousel(direction) {
+            const carousel = document.getElementById('carousel-images');
+            const carouselWidth = carousel.offsetWidth;
+            const images = carousel.getElementsByTagName('img');
+            const totalImages = images.length;
+
+            if (direction === 'left') {
+                currentIndex--;
+            } else if (direction === 'right') {
+                currentIndex++;
+            }
+
+            if (currentIndex < 0) {
+                currentIndex = totalImages - 1;
+            } else if (currentIndex >= totalImages) {
+                currentIndex = 0;
+            }
+
+            const newTransform = -currentIndex * carouselWidth;
+            carousel.style.transform = `translateX(${newTransform}px)`;
+        }
+
+        function loadImages() {
+            const carousel = document.getElementById('carousel-images');
+            for (let i = 1; i <= totalImages; i++) {
+                const img = document.createElement('img');
+                img.src = `img/galeria/foto (${i}).jpg`;
+                img.alt = `Foto ${i}`;
+                carousel.appendChild(img);
+            }
+            const firstImage = carousel.children[0].cloneNode();
+            carousel.appendChild(firstImage);
+        }
+
+        window.onload = typeMessage;
+    </script>
+</body>
+</html>
